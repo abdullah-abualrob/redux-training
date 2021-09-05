@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
+import Userlist from './components/Userlist';
+import Filter from './components/Filter';
+import { useSelector, useDispatch } from 'react-redux';
+
+
+import style from './App.module.css';
+import { FETCH_USERS } from './actions/types';
+import * as allUsers from './users.json'
 
 function App() {
+  
+  let usersData;
+  let users = [];
+  const dispatch = useDispatch();
+  
+  usersData = allUsers.default.users;
+  
+  useEffect(() => {
+    usersData.map(user => {
+      user = {...user, role: 'viewer'}
+      users.push(user)
+    })
+
+    dispatch({type: FETCH_USERS, payload: users})
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={style.App}>
+      <Userlist usersData = {users} displayAll={true}/>
+      <Filter />
     </div>
   );
 }
